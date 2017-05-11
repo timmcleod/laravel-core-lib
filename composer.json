@@ -1,0 +1,34 @@
+{
+    "name": "timmcleod/laravel-core-lib",
+    "description": "A library for Laravel",
+    "keywords": ["laravel"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Tim McLeod",
+            "email": "tim@timmcleod.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.0",
+        "illuminate/config": "~5.0",
+        "illuminate/support": "~5.0",
+        "illuminate/database": "~5.0",
+        "nesbot/carbon": "~1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "4.*|5.*",
+        "orchestra/testbench": "~3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "TimMcLeod\\LaravelCoreLib\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "minimum-stability": "stable"
+}
