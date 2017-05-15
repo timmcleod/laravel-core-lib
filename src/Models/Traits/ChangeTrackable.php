@@ -2,9 +2,9 @@
 namespace TimMcLeod\LaravelCoreLib\Models\Traits;
 
 /**
- * The purpose of this trait is to allow us to keep track
- * of attribute changes within our eloquent models so
- * we can access changes after we save our models
+ * The purpose of this trait is to allow us to keep track of changes
+ * that are made to attribute values within our eloquent models,
+ * so we can access those changes AFTER the model is saved.
  */
 trait ChangeTrackable
 {
@@ -59,6 +59,13 @@ trait ChangeTrackable
     }
 
     /**
+     * Returns an array of the attributes that have changed. If a property called
+     * $trackable exists on the model, then the $trackable array will be used
+     * to limit or filter the attributes that are returned in the result.
+     *
+     * If the $trackable property doesn't exist on the model or evaluates as empty,
+     * then all of the tracked changes will be returned without being filtered.
+     *
      * @return array
      */
     public function getTrackedChangesArray()
@@ -69,6 +76,9 @@ trait ChangeTrackable
     }
 
     /**
+     * Returns an array of the attributes that have changed. If the $attributes
+     * parameter evaluates as empty, then all tracked changes are returned.
+     *
      * @param array $attributes
      * @return array
      */
@@ -78,6 +88,10 @@ trait ChangeTrackable
     }
 
     /**
+     * Returns an array of the attributes that have changed. If the $trackable
+     * property exists on the model, it's ignored, and all tracked changes
+     * are always returned, regardless of whether $trackable exists.
+     *
      * @return array
      */
     public function getTrackedChangesArrayForAll()
@@ -86,6 +100,10 @@ trait ChangeTrackable
     }
 
     /**
+     * Returns true if any of the $trackable attributes have changed. If the
+     * $trackable property evaluates as empty, this will return true if
+     * any of the attributes' values have changed on the model.
+     *
      * @return bool
      */
     public function hasTrackedChanges()
@@ -94,6 +112,9 @@ trait ChangeTrackable
     }
 
     /**
+     * Returns true if any of the model's attributes have changed, regardless
+     * of whether or not the $trackable property is defined on the model.
+     *
      * @return bool
      */
     public function hasAnyTrackedChanges()
@@ -102,6 +123,10 @@ trait ChangeTrackable
     }
 
     /**
+     * Returns true if any of the given attributes have changed on the model,
+     * regardless of whether or not the $trackable property is defined on
+     * the model.
+     *
      * @param array $attributes
      * @return bool
      */
@@ -111,6 +136,13 @@ trait ChangeTrackable
     }
 
     /**
+     * Returns a string representation of the attributes that have changed. If a
+     * property called $trackable exists on the model, then that $trackable
+     * array is used to filter the attributes that should be serialized.
+     *
+     * If the $trackable property doesn't exist on the model or evaluates as empty,
+     * then all of the tracked changes will be serialized without being filtered.
+     *
      * @param string $format
      * @param string $delimiter
      * @param string $emptyOld
@@ -126,6 +158,10 @@ trait ChangeTrackable
     }
 
     /**
+     * Returns a string representation of the attributes that have changed. If the
+     * $attributes parameter evaluates as empty, then all tracked changes will
+     * be serialized into a string without being filtered.
+     *
      * @param array  $attributes
      * @param string $format
      * @param string $delimiter
@@ -142,6 +178,9 @@ trait ChangeTrackable
     }
 
     /**
+     * Returns a string representation of ALL of the attributes that have changed
+     * on the model, even if the $trackable property does exist on the model.
+     *
      * @param string $format
      * @param string $delimiter
      * @param string $emptyOld
@@ -155,6 +194,8 @@ trait ChangeTrackable
     }
 
     /**
+     * Serializes the changes into a string using the given $format.
+     *
      * @param array  $changes
      * @param string $format
      * @param string $delimiter
@@ -186,9 +227,9 @@ trait ChangeTrackable
     }
 
     /**
-     * Get the value of the original attribute (not a relationship).
-     * This method mimics the model's getAttributeValue() method
-     * except this one is used to return the original value.
+     * Get the value of the original attribute (not a relationship). This method
+     * mimics the model's getAttributeValue() method except this one is used
+     * to return the original value in its mutated or casted state.
      *
      * @param  string $key
      * @return mixed
