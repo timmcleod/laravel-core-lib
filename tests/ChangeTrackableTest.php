@@ -398,7 +398,7 @@ class ChangeTrackableTest extends TestCase
         // Expect to see NO changes when passing empty array for attributes param
         $this->assertEquals(false, $this->user->hasAnyTrackedChangesFor([]));
     }
-    
+
     public function testHasAnyTrackedChangesForInAgeTrackedModel()
     {
         // The hasAnyTrackedChangesFor() method should behave exactly the same
@@ -491,7 +491,8 @@ class ChangeTrackableTest extends TestCase
             'age was changed from "50" to "zilch"' . PHP_EOL .
             'id was changed from "1" to "1000"' . PHP_EOL .
             'name was changed from "Marty" to "Calvin Klein"',
-            $this->user->getTrackedChanges('{attribute} was changed from "{old}" to "{new}"', PHP_EOL, 'nada', 'zilch'));
+            $this->user->getTrackedChanges('{attribute} was changed from "{old}" to "{new}"', PHP_EOL, 'nada',
+                'zilch'));
     }
 
     public function testGetTrackedChangesInAgeTrackedModel()

@@ -5,6 +5,9 @@ namespace TimMcLeod\LaravelCoreLib\Models\Traits;
  * The purpose of this trait is to allow us to keep track of changes
  * that are made to attribute values within our eloquent models,
  * so we can access those changes AFTER the model is saved.
+ *
+ * This can be helpful if we want to log the changes somewhere for
+ * later review.
  */
 trait ChangeTrackable
 {
