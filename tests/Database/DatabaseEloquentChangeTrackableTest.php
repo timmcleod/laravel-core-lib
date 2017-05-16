@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Orchestra\Testbench\TestCase;
 use TimMcLeod\LaravelCoreLib\Database\Eloquent\ChangeTrackable;
 
-class ChangeTrackableTest extends TestCase
+class DatabaseEloquentChangeTrackableTest extends TestCase
 {
     /**
      * @var ChangeTrackableTestUser
