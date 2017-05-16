@@ -3,7 +3,7 @@
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use Illuminate\Database\Schema\Blueprint;
 use Orchestra\Testbench\TestCase;
-use TimMcLeod\LaravelCoreLib\Models\Traits\ChangeTrackable;
+use TimMcLeod\LaravelCoreLib\Database\Eloquent\ChangeTrackable;
 
 class ChangeTrackableTest extends TestCase
 {

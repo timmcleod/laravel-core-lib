@@ -1,5 +1,5 @@
 <?php
-namespace TimMcLeod\LaravelCoreLib\Models\Traits;
+namespace TimMcLeod\LaravelCoreLib\Database\Eloquent;
 
 /**
  * The purpose of this trait is to allow us to keep track of changes
