@@ -2,37 +2,46 @@
 
 namespace TimMcLeod\LaravelCoreLib\Providers;
 
-use Illuminate\Foundation\Providers\ArtisanServiceProvider;
-use TimMcLeod\LaravelCoreLib\Generators\ViewModelMakeCommand;
+use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Support\ServiceProvider;
+use TimMcLeod\LaravelCoreLib\Calendar\VCalendar;
 
-class LaravelCoreLibServiceProvider extends ArtisanServiceProvider
+class LaravelCoreLibServiceProvider extends ServiceProvider
 {
     /**
-     * The commands to be registered.
+     * Bootstrap the application services.
      *
-     * @var array
+     * @param ResponseFactory $factory
      */
-    protected $commands = [];
+    public function boot(ResponseFactory $factory)
+    {
+        // A macro for an ICS response.
+        // Ex: Response::ics($calendar)
+        $factory->macro('ics', function (VCalendar $calendar) use ($factory)
+        {
+            $filename = str_slug($calendar->vEvents()->first()) . '.ics';
+            $headers = [
+                'Content-type'        => 'text/calendar; charset=utf-8',
+                'Content-Disposition' => "attachment; filename=$filename"
+            ];
+
+            return $factory->make($calendar, 200, $headers);
+        });
+
+        // Publishes a config file to the project after running:
+        // php artisan vendor:publish
+        $this->publishes([
+            __DIR__ . '/../../config/calendar.php' => config_path('calendar.php'),
+        ]);
+    }
 
     /**
-     * The commands to be registered.
-     *
-     * @var array
-     */
-    protected $devCommands = [
-        'ViewModelMake' => 'command.view-model.make',
-    ];
-
-    /**
-     * Register the command.
+     * Register the application services.
      *
      * @return void
      */
-    protected function registerViewModelMakeCommand()
+    public function register()
     {
-        $this->app->singleton('command.view-model.make', function ($app)
-        {
-            return new ViewModelMakeCommand($app['files']);
-        });
+        //
     }
 }

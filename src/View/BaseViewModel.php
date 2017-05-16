@@ -24,6 +24,18 @@ abstract class BaseViewModel
     }
 
     /**
+     * @throws Exception
+     */
+    protected function validate()
+    {
+        $validator = validator($this->data, $this->rules);
+        if ($validator->fails())
+        {
+            throw new Exception('Invalid data: ' . $validator->getMessageBag()->first());
+        }
+    }
+
+    /**
      * @param string $field
      * @return mixed
      */
@@ -39,42 +51,6 @@ abstract class BaseViewModel
     public function __isset($field)
     {
         return array_key_exists($field, $this->data);
-    }
-
-    /**
-     * @throws Exception
-     */
-    protected function validate()
-    {
-        $validator = validator($this->data, $this->rules);
-        if ($validator->fails())
-        {
-            throw new Exception('Invalid data: ' . $validator->getMessageBag()->first());
-        }
-    }
-
-    /**
-     * Returns true if any "old" inputs exist.
-     *
-     * @return bool
-     */
-    public function hasOldInput()
-    {
-        return count(old()) > 0;
-    }
-
-    /**
-     * Returns true if the given checkbox should be checked.
-     *
-     * @param string $field
-     * @param bool   $default
-     * @return bool
-     */
-    public function checkboxIsChecked($field, $default)
-    {
-        // if old input exists, use it the old value, otherwise, use the default
-        if ($this->hasOldInput()) return old($field) === 'on';
-        return !!$default;
     }
 
     /**
@@ -94,17 +70,27 @@ abstract class BaseViewModel
     }
 
     /**
-     * Returns true if the given array checkbox should be checked.
+     * Returns true if the given checkbox should be checked.
      *
      * @param string $field
-     * @param string $value
-     * @param array  $default
+     * @param bool   $default
      * @return bool
      */
-    public function checkboxInArrayIsChecked($field, $value, $default = [])
+    public function checkboxIsChecked($field, $default)
     {
-        if ($this->hasOldInput()) return in_array($value, old($field, []));
-        return in_array($value, $default);
+        // if old input exists, use it the old value, otherwise, use the default
+        if ($this->hasOldInput()) return old($field) === 'on';
+        return !!$default;
+    }
+
+    /**
+     * Returns true if any "old" inputs exist.
+     *
+     * @return bool
+     */
+    public function hasOldInput()
+    {
+        return count(old()) > 0;
     }
 
     /**
@@ -122,5 +108,19 @@ abstract class BaseViewModel
     public function checkboxInArrayChecked($field, $value, $default = [])
     {
         return $this->checkboxInArrayIsChecked($field, $value, $default) ? 'checked' : '';
+    }
+
+    /**
+     * Returns true if the given array checkbox should be checked.
+     *
+     * @param string $field
+     * @param string $value
+     * @param array  $default
+     * @return bool
+     */
+    public function checkboxInArrayIsChecked($field, $value, $default = [])
+    {
+        if ($this->hasOldInput()) return in_array($value, old($field, []));
+        return in_array($value, $default);
     }
 }

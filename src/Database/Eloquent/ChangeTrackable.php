@@ -1,4 +1,5 @@
 <?php
+
 namespace TimMcLeod\LaravelCoreLib\Database\Eloquent;
 
 /**
@@ -45,6 +46,27 @@ trait ChangeTrackable
     }
 
     /**
+     * Get the value of the original attribute (not a relationship). This method
+     * mimics the model's getAttributeValue() method except this one is used
+     * to return the original value in its mutated or casted state.
+     *
+     * @param  string $key
+     * @return mixed
+     */
+    public function getOriginalAttributeValue($key)
+    {
+        $value = $this->getOriginal($key);
+
+        if ($this->hasGetMutator($key)) return $this->mutateAttribute($key, $value);
+
+        if ($this->hasCast($key)) return $this->castAttribute($key, $value);
+
+        if (in_array($key, $this->getDates()) && !is_null($value)) return $this->asDateTime($value);
+
+        return $value;
+    }
+
+    /**
      * @param string $key
      * @param mixed  $old
      * @param mixed  $new
@@ -59,6 +81,30 @@ trait ChangeTrackable
         array_set($this->trackedChanges, "$key.new", $new);
 
         ksort($this->trackedChanges);
+    }
+
+    /**
+     * Returns an array of the attributes that have changed. If the $trackable
+     * property exists on the model, it's ignored, and all tracked changes
+     * are always returned, regardless of whether $trackable exists.
+     *
+     * @return array
+     */
+    public function getTrackedChangesArrayForAll()
+    {
+        return $this->trackedChanges;
+    }
+
+    /**
+     * Returns true if any of the $trackable attributes have changed. If the
+     * $trackable property evaluates as empty, this will return true if
+     * any of the attributes' values have changed on the model.
+     *
+     * @return bool
+     */
+    public function hasTrackedChanges()
+    {
+        return !empty($this->getTrackedChangesArray());
     }
 
     /**
@@ -88,30 +134,6 @@ trait ChangeTrackable
     public function getTrackedChangesArrayFor($attributes = [])
     {
         return empty($attributes) ? $this->trackedChanges : array_only($this->trackedChanges, $attributes);
-    }
-
-    /**
-     * Returns an array of the attributes that have changed. If the $trackable
-     * property exists on the model, it's ignored, and all tracked changes
-     * are always returned, regardless of whether $trackable exists.
-     *
-     * @return array
-     */
-    public function getTrackedChangesArrayForAll()
-    {
-        return $this->trackedChanges;
-    }
-
-    /**
-     * Returns true if any of the $trackable attributes have changed. If the
-     * $trackable property evaluates as empty, this will return true if
-     * any of the attributes' values have changed on the model.
-     *
-     * @return bool
-     */
-    public function hasTrackedChanges()
-    {
-        return !empty($this->getTrackedChangesArray());
     }
 
     /**
@@ -181,22 +203,6 @@ trait ChangeTrackable
     }
 
     /**
-     * Returns a string representation of ALL of the attributes that have changed
-     * on the model, even if the $trackable property does exist on the model.
-     *
-     * @param string $format
-     * @param string $delimiter
-     * @param string $emptyOld
-     * @param string $emptyNew
-     * @return string
-     */
-    public function getTrackedChangesForAll(
-        $format = '{attribute}: {old} > {new}', $delimiter = ' | ', $emptyOld = '', $emptyNew = ''
-    ) {
-        return $this->getChangesString($this->trackedChanges, $format, $delimiter, $emptyOld, $emptyNew);
-    }
-
-    /**
      * Serializes the changes into a string using the given $format.
      *
      * @param array  $changes
@@ -230,23 +236,18 @@ trait ChangeTrackable
     }
 
     /**
-     * Get the value of the original attribute (not a relationship). This method
-     * mimics the model's getAttributeValue() method except this one is used
-     * to return the original value in its mutated or casted state.
+     * Returns a string representation of ALL of the attributes that have changed
+     * on the model, even if the $trackable property does exist on the model.
      *
-     * @param  string $key
-     * @return mixed
+     * @param string $format
+     * @param string $delimiter
+     * @param string $emptyOld
+     * @param string $emptyNew
+     * @return string
      */
-    public function getOriginalAttributeValue($key)
-    {
-        $value = $this->getOriginal($key);
-
-        if ($this->hasGetMutator($key)) return $this->mutateAttribute($key, $value);
-
-        if ($this->hasCast($key)) return $this->castAttribute($key, $value);
-
-        if (in_array($key, $this->getDates()) && !is_null($value)) return $this->asDateTime($value);
-
-        return $value;
+    public function getTrackedChangesForAll(
+        $format = '{attribute}: {old} > {new}', $delimiter = ' | ', $emptyOld = '', $emptyNew = ''
+    ) {
+        return $this->getChangesString($this->trackedChanges, $format, $delimiter, $emptyOld, $emptyNew);
     }
 }
