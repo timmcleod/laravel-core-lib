@@ -1,5 +1,7 @@
 <?php
 
+namespace TimMcLeod\LaravelCoreLib\Tests\Database;
+
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use Illuminate\Database\Schema\Blueprint;
 use Orchestra\Testbench\TestCase;
