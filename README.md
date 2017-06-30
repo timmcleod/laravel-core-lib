@@ -178,7 +178,7 @@ This command will place a new `EditProfileViewModel` class within your `app/Http
 
 namespace App\Http\ViewModels;
 
-use TimMcLeod\ViewModel\BaseViewModel;
+use TimMcLeod\LaravelCoreLib\View\BaseViewModel;
 
 class EditProfileViewModel extends BaseViewModel
 {
