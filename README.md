@@ -283,7 +283,7 @@ public function citiesCol2()
 
 As you can see, View Models allow us to bundle the view data with the methods required to manipulate the data in the context of the view.
 
-Optionally, when the new view model is instantiated, the data can be validated using the rules defined in your view model class. You can use any of the [available validation rules](https://laravel.com/docs/5.2/validation#available-validation-rules) defined in Laravel documentation.
+Optionally, when the new view model is instantiated, the data can be validated using the rules defined in your view model class. You can use any of the [available validation rules](https://laravel.com/docs/5.4/validation#available-validation-rules) defined in Laravel documentation.
 
 ```php
 protected $rules = [
