@@ -116,7 +116,7 @@ $model->getTrackedChangesFor($attributes = [], $format = '{attribute}: {old} > {
  */
 $model->getTrackedChangesArrayFor($attributes = [])
 
-**
+/**
  * Returns true if any of the model's attributes have changed, regardless
  * of whether or not the $trackable property is defined on the model.
  *
