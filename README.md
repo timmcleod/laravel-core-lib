@@ -47,15 +47,6 @@ When your models are saved, the `ChangeTrackable` trait will automatically keep 
 
 ```php
 /**
- * Returns an array of the attributes that have changed. If the $trackable
- * property exists on the model, it's ignored, and all tracked changes
- * are always returned, regardless of whether $trackable exists.
- *
- * @return array
- */
-$model->getTrackedChangesArrayForAll()
-
-/**
  * Returns true if any of the $trackable attributes have changed. If the
  * $trackable property evaluates as empty, this will return true if
  * any of the attributes' values have changed on the model.
@@ -63,6 +54,22 @@ $model->getTrackedChangesArrayForAll()
  * @return bool
  */
 $model->hasTrackedChanges()
+
+/**
+ * Returns a string representation of the attributes that have changed. If a
+ * property called $trackable exists on the model, then that $trackable
+ * array is used to filter the attributes that should be serialized.
+ *
+ * If the $trackable property doesn't exist on the model or evaluates as empty,
+ * then all of the tracked changes will be serialized without being filtered.
+ *
+ * @param string $format
+ * @param string $delimiter
+ * @param string $emptyOld
+ * @param string $emptyNew
+ * @return string
+ */
+$model->getTrackedChanges($format = '{attribute}: {old} > {new}', $delimiter = ' | ', $emptyOld = '', $emptyNew = '')
 
 /**
  * Returns an array of the attributes that have changed. If a property called
@@ -75,6 +82,30 @@ $model->hasTrackedChanges()
  * @return array
  */
 $model->getTrackedChangesArray()
+
+/**
+ * Returns true if any of the given attributes have changed on the model,
+ * regardless of whether or not the $trackable property is defined on
+ * the model.
+ *
+ * @param array $attributes
+ * @return bool
+ */
+$model->hasAnyTrackedChangesFor($attributes = [])
+
+/**
+ * Returns a string representation of the attributes that have changed. If the
+ * $attributes parameter evaluates as empty, then all tracked changes will
+ * be serialized into a string without being filtered.
+ *
+ * @param array  $attributes
+ * @param string $format
+ * @param string $delimiter
+ * @param string $emptyOld
+ * @param string $emptyNew
+ * @return string
+ */
+$model->getTrackedChangesFor($attributes = [], $format = '{attribute}: {old} > {new}', $delimiter = ' | ', $emptyOld = '', $emptyNew = '')
 
 /**
  * Returns an array of the attributes that have changed. If the $attributes
@@ -94,46 +125,6 @@ $model->getTrackedChangesArrayFor($attributes = [])
 $model->hasAnyTrackedChanges()
 
 /**
- * Returns true if any of the given attributes have changed on the model,
- * regardless of whether or not the $trackable property is defined on
- * the model.
- *
- * @param array $attributes
- * @return bool
- */
-$model->hasAnyTrackedChangesFor($attributes = [])
-
-/**
- * Returns a string representation of the attributes that have changed. If a
- * property called $trackable exists on the model, then that $trackable
- * array is used to filter the attributes that should be serialized.
- *
- * If the $trackable property doesn't exist on the model or evaluates as empty,
- * then all of the tracked changes will be serialized without being filtered.
- *
- * @param string $format
- * @param string $delimiter
- * @param string $emptyOld
- * @param string $emptyNew
- * @return string
- */
-$model->getTrackedChanges($format = '{attribute}: {old} > {new}', $delimiter = ' | ', $emptyOld = '', $emptyNew = '')
-
-/**
- * Returns a string representation of the attributes that have changed. If the
- * $attributes parameter evaluates as empty, then all tracked changes will
- * be serialized into a string without being filtered.
- *
- * @param array  $attributes
- * @param string $format
- * @param string $delimiter
- * @param string $emptyOld
- * @param string $emptyNew
- * @return string
- */
-$model->getTrackedChangesFor($attributes = [], $format = '{attribute}: {old} > {new}', $delimiter = ' | ', $emptyOld = '', $emptyNew = '')
-
-/**
  * Returns a string representation of ALL of the attributes that have changed
  * on the model, even if the $trackable property does exist on the model.
  *
@@ -144,6 +135,15 @@ $model->getTrackedChangesFor($attributes = [], $format = '{attribute}: {old} > {
  * @return string
  */
 $model->getTrackedChangesForAll($format = '{attribute}: {old} > {new}', $delimiter = ' | ', $emptyOld = '', $emptyNew = '')
+
+/**
+ * Returns an array of the attributes that have changed. If the $trackable
+ * property exists on the model, it's ignored, and all tracked changes
+ * are always returned, regardless of whether $trackable exists.
+ *
+ * @return array
+ */
+$model->getTrackedChangesArrayForAll()
 ```
 
 ## View Models
