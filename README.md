@@ -29,7 +29,7 @@ The purpose of this trait is to allow us to keep track of changes that are made 
 
 This can be helpful if we want to log the changes somewhere for later review.
 
-To keep track of changes that are made to the properties/fields of your Eloquent models, just add the `ChangeTrackable` trait to the models you want to track:
+To keep track of changes that are made to the properties/fields of your Eloquent models, just add the `ChangeTrackable` trait to the models you want to track. If you would like to limit which fields are tracked, just add a property called `$trackable` as shown below.
 
 ```php
 use Illuminate\Database\Eloquent\Model;
@@ -39,22 +39,111 @@ class User extends Model
 {
     use ChangeTrackable;
     
-    // ...
+    protected $trackable = ['first_name', 'last_name'];
 }
 ```
 
 When your models are saved, the `ChangeTrackable` trait will automatically keep track of the fields that have changed. The following methods can be used to learn more about those changes:
 
-```
-$model->getTrackedChangesArrayForAll() : array
-$model->hasTrackedChanges() : bool
-$model->getTrackedChangesArray() : array
-$model->getTrackedChangesArrayFor($attributes = []) : array
-$model->hasAnyTrackedChanges() : bool
-$model->hasAnyTrackedChangesFor($attributes = []) : bool
-$model->getTrackedChanges($format = '{attribute}: {old} > {new}', $delimiter = ' | ', $emptyOld = '', $emptyNew = '') : string
-$model->getTrackedChangesFor($attributes = [], $format = '{attribute}: {old} > {new}', $delimiter = ' | ', $emptyOld = '', $emptyNew = '') : string
-$model->getTrackedChangesForAll($format = '{attribute}: {old} > {new}', $delimiter = ' | ', $emptyOld = '', $emptyNew = '') : string
+```php
+/**
+ * Returns an array of the attributes that have changed. If the $trackable
+ * property exists on the model, it's ignored, and all tracked changes
+ * are always returned, regardless of whether $trackable exists.
+ *
+ * @return array
+ */
+$model->getTrackedChangesArrayForAll()
+
+/**
+ * Returns true if any of the $trackable attributes have changed. If the
+ * $trackable property evaluates as empty, this will return true if
+ * any of the attributes' values have changed on the model.
+ *
+ * @return bool
+ */
+$model->hasTrackedChanges()
+
+/**
+ * Returns an array of the attributes that have changed. If a property called
+ * $trackable exists on the model, then the $trackable array will be used
+ * to limit or filter the attributes that are returned in the result.
+ *
+ * If the $trackable property doesn't exist on the model or evaluates as empty,
+ * then all of the tracked changes will be returned without being filtered.
+ *
+ * @return array
+ */
+$model->getTrackedChangesArray()
+
+/**
+ * Returns an array of the attributes that have changed. If the $attributes
+ * parameter evaluates as empty, then all tracked changes are returned.
+ *
+ * @param array $attributes
+ * @return array
+ */
+$model->getTrackedChangesArrayFor($attributes = [])
+
+**
+ * Returns true if any of the model's attributes have changed, regardless
+ * of whether or not the $trackable property is defined on the model.
+ *
+ * @return bool
+ */
+$model->hasAnyTrackedChanges()
+
+/**
+ * Returns true if any of the given attributes have changed on the model,
+ * regardless of whether or not the $trackable property is defined on
+ * the model.
+ *
+ * @param array $attributes
+ * @return bool
+ */
+$model->hasAnyTrackedChangesFor($attributes = [])
+
+/**
+ * Returns a string representation of the attributes that have changed. If a
+ * property called $trackable exists on the model, then that $trackable
+ * array is used to filter the attributes that should be serialized.
+ *
+ * If the $trackable property doesn't exist on the model or evaluates as empty,
+ * then all of the tracked changes will be serialized without being filtered.
+ *
+ * @param string $format
+ * @param string $delimiter
+ * @param string $emptyOld
+ * @param string $emptyNew
+ * @return string
+ */
+$model->getTrackedChanges($format = '{attribute}: {old} > {new}', $delimiter = ' | ', $emptyOld = '', $emptyNew = '')
+
+/**
+ * Returns a string representation of the attributes that have changed. If the
+ * $attributes parameter evaluates as empty, then all tracked changes will
+ * be serialized into a string without being filtered.
+ *
+ * @param array  $attributes
+ * @param string $format
+ * @param string $delimiter
+ * @param string $emptyOld
+ * @param string $emptyNew
+ * @return string
+ */
+$model->getTrackedChangesFor($attributes = [], $format = '{attribute}: {old} > {new}', $delimiter = ' | ', $emptyOld = '', $emptyNew = '')
+
+/**
+ * Returns a string representation of ALL of the attributes that have changed
+ * on the model, even if the $trackable property does exist on the model.
+ *
+ * @param string $format
+ * @param string $delimiter
+ * @param string $emptyOld
+ * @param string $emptyNew
+ * @return string
+ */
+$model->getTrackedChangesForAll($format = '{attribute}: {old} > {new}', $delimiter = ' | ', $emptyOld = '', $emptyNew = '')
 ```
 
 ## View Models
