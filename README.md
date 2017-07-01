@@ -312,6 +312,10 @@ protected $rules = [
 ###### < /Side Note >
 
 
+## File Savable Models
+
+```TODO: write helpful things about saving a file along with a model```
+
 ## ICS Calendar
 
 ```TODO: write helpful things about creating calendar events with ICS files```
