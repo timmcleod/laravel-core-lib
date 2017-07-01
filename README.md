@@ -3,6 +3,7 @@
 1) [Installation](#installation)
 1) [Change Trackable Models](#change-trackable-models)
 1) [View Models](#view-models)
+1) [File Savable Models](#file-savable-models)
 1) [ICS Calendar](#ics-calendar)
 
 ## Installation
