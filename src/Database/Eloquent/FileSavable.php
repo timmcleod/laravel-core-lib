@@ -59,14 +59,25 @@ trait FileSavable
      */
     public function getStoragePath($includeFilename = false)
     {
+        $classDir = snake_case(array_last(explode('\\', get_class($this))));
         $year = $this->created_at->format('Y');
         $month = $this->created_at->format('m');
 
-        $path = $this->getStoragePathRoot() . "$year/$month";
+        $path = "uploads/$classDir/$year/$month";
 
-        if ($includeFilename) $path .= "/$this->id";
+        if ($includeFilename) $path .= '/' . $this->getStoragePathFilename();
 
         return $path;
+    }
+
+    /**
+     * The name of the file as it is stored after upload.
+     *
+     * @return string
+     */
+    public function getStoragePathFilename()
+    {
+        return "$this->id";
     }
 
     /**
@@ -167,23 +178,6 @@ trait FileSavable
     public function isPng()
     {
         return strtolower($this->mime_type ?? '') == 'image/png';
-    }
-
-    /**
-     * @return string
-     */
-    protected function getStoragePathRoot()
-    {
-        /*
-         * By default, the file save directory will be the name of the class (snake-cased),
-         * but this can be customized by adding $fileSaveDirectory property to the model.
-         *
-         * Ex: protected $fileSaveDirectory = 'some_directory';
-         */
-        $fileSaveDirectory = property_exists(static::class,
-            'fileSaveDirectory') ? $this->fileSaveDirectory : snake_case(get_class($this));
-
-        return "uploads/$fileSaveDirectory/";
     }
 
     /**
