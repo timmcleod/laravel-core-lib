@@ -2,6 +2,7 @@
 
 namespace TimMcLeod\LaravelCoreLib\Database\Eloquent;
 
+use Crypt;
 use Storage;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -21,8 +22,9 @@ trait FileSavable
      *
      * @param UploadedFile $file
      * @param bool         $saveToCloud
+     * @param bool         $saveToDisk
      */
-    public function saveWithFile(UploadedFile $file, $saveToCloud = false)
+    public function saveWithFile(UploadedFile $file, $saveToCloud = false, $saveToDisk = true)
     {
         if ($this->shouldSaveField('size'))
         {
@@ -42,8 +44,14 @@ trait FileSavable
         // save the model if it doesn't already have an ID
         if (empty($this->id)) $this->save();
 
-        $contents = file_get_contents($file);
-        $saveToCloud ? $this->saveToCloud($contents) : $this->saveToDisk($contents);
+        if ($saveToDisk || $saveToCloud)
+        {
+            $contents = $this->encryptFile() ? Crypt::encrypt(file_get_contents($file)) : file_get_contents($file);
+
+            if ($saveToDisk) $this->saveToDisk($contents);
+
+            if ($saveToCloud) $this->saveToCloud($contents);
+        }
 
         $this->save();
     }
@@ -178,6 +186,14 @@ trait FileSavable
     public function isPng()
     {
         return strtolower($this->mime_type ?? '') == 'image/png';
+    }
+
+    /**
+     * @return bool
+     */
+    protected function encryptFile()
+    {
+        return property_exists(static::class, 'encryptFile') && $this->encryptFile;
     }
 
     /**
