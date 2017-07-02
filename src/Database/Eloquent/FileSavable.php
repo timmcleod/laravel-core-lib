@@ -46,7 +46,7 @@ trait FileSavable
 
         if ($saveToDisk || $saveToCloud)
         {
-            $contents = $this->encryptFile() ? Crypt::encrypt(file_get_contents($file)) : file_get_contents($file);
+            $contents = $this->usingEncryption() ? Crypt::encrypt(file_get_contents($file)) : file_get_contents($file);
 
             if ($saveToDisk) $this->saveToDisk($contents);
 
@@ -54,6 +54,49 @@ trait FileSavable
         }
 
         $this->save();
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getFileContents()
+    {
+        $contents = null;
+
+        // try to pull file from disk first
+        if ($this->existsOnDisk()) $contents = Storage::disk()->get($this->getStoragePath(true));
+
+        // if it's still empty, try pulling from cloud instead
+        if (is_null($contents) && $this->existsInCloud()) $contents = Storage::cloud()->get($this->getStoragePath(true));
+
+        // decrypt if needed
+        if(!is_null($contents) && $this->usingEncryption()) $contents = Crypt::decrypt($contents);
+
+        return $contents;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFileMimeType()
+    {
+        return $this->{$this->getFieldColumnName('mime_type')};
+    }
+
+    /**
+     * @return string
+     */
+    public function getFileSize()
+    {
+        return $this->{$this->getFieldColumnName('size')};
+    }
+
+    /**
+     * @return string
+     */
+    public function getFileClientOriginalName()
+    {
+        return $this->{$this->getFieldColumnName('client_original_name')};
     }
 
     /**
@@ -191,7 +234,7 @@ trait FileSavable
     /**
      * @return bool
      */
-    protected function encryptFile()
+    public function usingEncryption()
     {
         return property_exists(static::class, 'encryptFile') && $this->encryptFile;
     }
