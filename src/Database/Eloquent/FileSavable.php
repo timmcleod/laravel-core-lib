@@ -70,7 +70,7 @@ trait FileSavable
         if (is_null($contents) && $this->existsInCloud()) $contents = Storage::cloud()->get($this->getStoragePath(true));
 
         // decrypt if needed
-        if(!is_null($contents) && $this->usingEncryption()) $contents = Crypt::decrypt($contents);
+        if (!is_null($contents) && $this->usingEncryption()) $contents = Crypt::decrypt($contents);
 
         return $contents;
     }
@@ -165,6 +165,15 @@ trait FileSavable
     public function deleteFromCloud()
     {
         Storage::cloud()->delete($this->getStoragePath(true));
+    }
+
+    /**
+     * Delete from cloud and disk.
+     */
+    public function deleteFile()
+    {
+        if ($this->existsInCloud()) $this->deleteFromCloud();
+        if ($this->existsOnDisk()) $this->deleteFromDisk();
     }
 
     /**
