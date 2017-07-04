@@ -3,6 +3,7 @@
 namespace TimMcLeod\LaravelCoreLib\Database\Eloquent;
 
 use Crypt;
+use Exception;
 use Storage;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -70,7 +71,11 @@ trait FileSavable
         if (is_null($contents) && $this->existsInCloud()) $contents = Storage::cloud()->get($this->getStoragePath(true));
 
         // decrypt if needed
-        if (!is_null($contents) && $this->usingEncryption()) $contents = Crypt::decrypt($contents);
+        if (!is_null($contents) && $this->usingEncryption())
+        {
+            try {$contents = Crypt::decrypt($contents);}
+            catch (Exception $e) {}
+        }
 
         return $contents;
     }
