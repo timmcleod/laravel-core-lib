@@ -42,7 +42,7 @@ trait FileSavable
             $this->{$this->getFieldColumnName('client_original_name')} = $file->getClientOriginalName();
         }
 
-        // save the model if it doesn't already have an ID
+        // Save the model if it doesn't already have an ID.
         if (empty($this->id)) $this->save();
 
         if ($saveToDisk || $saveToCloud)
@@ -64,15 +64,17 @@ trait FileSavable
     {
         $contents = null;
 
-        // try to pull file from disk first
+        // Try to pull file from disk first.
         if ($this->existsOnDisk()) $contents = Storage::disk()->get($this->getStoragePath(true));
 
-        // if it's still empty, try pulling from cloud instead
+        // If it's still empty, try pulling from cloud instead.
         if (is_null($contents) && $this->existsInCloud()) $contents = Storage::cloud()->get($this->getStoragePath(true));
 
-        // decrypt if needed
+        // Decrypt if needed.
         if (!is_null($contents) && $this->usingEncryption())
         {
+            // If decryption fails, we'll assume the file isn't
+            // encrypted on disk and we'll just skip decryption.
             try {$contents = Crypt::decrypt($contents);}
             catch (Exception $e) {}
         }
