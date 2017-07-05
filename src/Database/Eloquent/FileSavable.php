@@ -142,36 +142,42 @@ trait FileSavable
      * Save the given contents to disk.
      *
      * @param $content
+     * @return bool
      */
     public function saveToDisk($content)
     {
-        Storage::disk()->put($this->getStoragePath(true), $content);
+        return Storage::disk()->put($this->getStoragePath(true), $content);
     }
 
     /**
      * Save the given contents to the cloud.
      *
      * @param $content
+     * @return bool
      */
     public function saveToCloud($content)
     {
-        Storage::cloud()->put($this->getStoragePath(true), $content);
+        return Storage::cloud()->put($this->getStoragePath(true), $content);
     }
 
     /**
      * Delete the file from the local disk.
+     *
+     * @return bool
      */
     public function deleteFromDisk()
     {
-        Storage::disk()->delete($this->getStoragePath(true));
+        return Storage::disk()->delete($this->getStoragePath(true));
     }
 
     /**
      * Delete the file from the cloud.
+     *
+     * @return bool
      */
     public function deleteFromCloud()
     {
-        Storage::cloud()->delete($this->getStoragePath(true));
+        return Storage::cloud()->delete($this->getStoragePath(true));
     }
 
     /**
@@ -185,18 +191,22 @@ trait FileSavable
 
     /**
      * Gets the contents of the file stored in the cloud and saves it locally.
+     *
+     * @return bool
      */
     public function copyFromCloudToDisk()
     {
-        $this->saveToDisk(Storage::cloud()->get($this->getStoragePath(true)));
+        return $this->saveToDisk(Storage::cloud()->get($this->getStoragePath(true)));
     }
 
     /**
      * Gets the contents of the file stored on the disk and saves it to the cloud.
+     *
+     * @return bool
      */
     public function copyFromDiskToCloud()
     {
-        $this->saveToCloud(Storage::disk()->get($this->getStoragePath(true)));
+        return $this->saveToCloud(Storage::disk()->get($this->getStoragePath(true)));
     }
 
     /**
@@ -248,6 +258,10 @@ trait FileSavable
     }
 
     /**
+     * Files are not encrypted when they are saved by default, but a model can
+     * "opt-in" to encryption of the file that is stored on disk or in the
+     * cloud by setting the model property called $encryptFile to true.
+     *
      * @return bool
      */
     public function usingEncryption()
