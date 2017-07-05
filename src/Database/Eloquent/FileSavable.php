@@ -24,6 +24,7 @@ trait FileSavable
      * @param UploadedFile $file
      * @param bool         $saveToCloud
      * @param bool         $saveToDisk
+     * @throws Exception
      */
     public function saveWithFile(UploadedFile $file, $saveToCloud = false, $saveToDisk = true)
     {
@@ -49,9 +50,15 @@ trait FileSavable
         {
             $contents = $this->usingEncryption() ? Crypt::encrypt(file_get_contents($file)) : file_get_contents($file);
 
-            if ($saveToDisk) $this->saveToDisk($contents);
+            if ($saveToDisk && !$this->saveToDisk($contents))
+            {
+                throw new Exception("Unable to save file (" . $this->id . ") to disk.");
+            };
 
-            if ($saveToCloud) $this->saveToCloud($contents);
+            if ($saveToCloud && !$this->saveToCloud($contents))
+            {
+                throw new Exception("Unable to save file (" . $this->id . ") to cloud.");
+            };
         }
 
         $this->save();
