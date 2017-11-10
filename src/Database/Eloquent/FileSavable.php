@@ -72,10 +72,10 @@ trait FileSavable
         $contents = null;
 
         // Try to pull file from disk first.
-        if ($this->existsOnDisk()) $contents = Storage::disk()->get($this->getStoragePath(true));
+        if ($this->existsOnDisk()) $contents = Storage::disk($this->getLocalDiskName())->get($this->getStoragePath(true));
 
         // If it's still empty, try pulling from cloud instead.
-        if (is_null($contents) && $this->existsInCloud()) $contents = Storage::cloud()->get($this->getStoragePath(true));
+        if (is_null($contents) && $this->existsInCloud()) $contents = Storage::disk($this->getCloudDiskName())->get($this->getStoragePath(true));
 
         // Decrypt if needed.
         if (!is_null($contents) && $this->usingEncryption())
@@ -153,7 +153,7 @@ trait FileSavable
      */
     public function saveToDisk($content)
     {
-        return Storage::disk()->put($this->getStoragePath(true), $content);
+        return Storage::disk($this->getLocalDiskName())->put($this->getStoragePath(true), $content);
     }
 
     /**
@@ -164,7 +164,7 @@ trait FileSavable
      */
     public function saveToCloud($content)
     {
-        return Storage::cloud()->put($this->getStoragePath(true), $content);
+        return Storage::disk($this->getCloudDiskName())->put($this->getStoragePath(true), $content);
     }
 
     /**
@@ -174,7 +174,7 @@ trait FileSavable
      */
     public function deleteFromDisk()
     {
-        return Storage::disk()->delete($this->getStoragePath(true));
+        return Storage::disk($this->getLocalDiskName())->delete($this->getStoragePath(true));
     }
 
     /**
@@ -184,7 +184,7 @@ trait FileSavable
      */
     public function deleteFromCloud()
     {
-        return Storage::cloud()->delete($this->getStoragePath(true));
+        return Storage::disk($this->getCloudDiskName())->delete($this->getStoragePath(true));
     }
 
     /**
@@ -203,7 +203,7 @@ trait FileSavable
      */
     public function copyFromCloudToDisk()
     {
-        return $this->saveToDisk(Storage::cloud()->get($this->getStoragePath(true)));
+        return $this->saveToDisk(Storage::disk($this->getCloudDiskName())->get($this->getStoragePath(true)));
     }
 
     /**
@@ -213,7 +213,7 @@ trait FileSavable
      */
     public function copyFromDiskToCloud()
     {
-        return $this->saveToCloud(Storage::disk()->get($this->getStoragePath(true)));
+        return $this->saveToCloud(Storage::disk($this->getLocalDiskName())->get($this->getStoragePath(true)));
     }
 
     /**
@@ -221,7 +221,7 @@ trait FileSavable
      */
     public function existsOnDisk()
     {
-        return Storage::disk()->exists($this->getStoragePath(true));
+        return Storage::disk($this->getLocalDiskName())->exists($this->getStoragePath(true));
     }
 
     /**
@@ -229,7 +229,7 @@ trait FileSavable
      */
     public function existsInCloud()
     {
-        return Storage::cloud()->exists($this->getStoragePath(true));
+        return Storage::disk($this->getCloudDiskName())->exists($this->getStoragePath(true));
     }
 
     /**
@@ -312,5 +312,31 @@ trait FileSavable
     protected function getFieldColumnName($field)
     {
         return $this->savableFields[$field];
+    }
+
+    /**
+     * Returns the name of the local disk that this model should use. If this disk
+     * isn't defined on the model, then we will use the default local disk.
+     *
+     * @return string
+     */
+    protected function getLocalDiskName()
+    {
+        if (!property_exists(static::class, 'localDiskName')) return Storage::getDefaultDriver();
+
+        return $this->localDiskName;
+    }
+
+    /**
+     * Returns the name of the cloud disk that this model should use. If this disk
+     * isn't defined on the model, then we will use the default cloud disk.
+     *
+     * @return string
+     */
+    protected function getCloudDiskName()
+    {
+        if (!property_exists(static::class, 'cloudDiskName')) return Storage::getDefaultCloudDriver();
+
+        return $this->cloudDiskName;
     }
 }
