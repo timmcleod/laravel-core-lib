@@ -2,14 +2,14 @@
 
 namespace TimMcLeod\LaravelCoreLib\Jobs;
 
+use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 use Storage;
 
-class CopyLocalFileToCloud extends Job implements ShouldQueue
+class CopyLocalFileToCloud implements ShouldQueue
 {
-    use InteractsWithQueue, SerializesModels;
+    use InteractsWithQueue, Queueable;
 
     /** @var string */
     protected $path;
