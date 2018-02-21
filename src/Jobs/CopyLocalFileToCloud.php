@@ -43,4 +43,20 @@ class CopyLocalFileToCloud implements ShouldQueue
             Storage::disk()->delete($this->path);
         }
     }
+
+    /**
+     * @return string
+     */
+    public function getPath()
+    {
+        return $this->path;
+    }
+
+    /**
+     * @return bool
+     */
+    public function willDeleteAfterCopy()
+    {
+        return $this->deleteAfterCopy;
+    }
 }
