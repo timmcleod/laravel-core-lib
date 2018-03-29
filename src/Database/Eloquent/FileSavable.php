@@ -136,6 +136,15 @@ trait FileSavable
     }
 
     /**
+     * @param bool $includeFilename
+     * @return string
+     */
+    public function getFullLocalStoragePath($includeFilename = false)
+    {
+        return Storage::disk($this->getLocalDiskName())->path($this->getStoragePath($includeFilename));
+    }
+
+    /**
      * The name of the file as it is stored after upload.
      *
      * @return string
