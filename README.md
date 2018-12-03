@@ -326,3 +326,5 @@ protected $rules = [
 LaravelCoreLib for Laravel is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).
 
 [Laravel](http://laravel.com) is a trademark of Taylor Otwell.
+
+
