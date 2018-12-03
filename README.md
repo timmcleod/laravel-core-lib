@@ -297,7 +297,7 @@ If any of the data coming from the controller fails validation, an exception is 
 
 ###### < Side Note >
 
-If you require the package, `timmcleod/laravel-instance-validator`, it will add a few additional validation rules that can be helpful in your View Models if you would like to validate the data that the View Model receives.
+Optionally, if you require the package, `timmcleod/laravel-instance-validator`, it will add a few additional validation rules that can be helpful in your View Models if you would like to validate the data that the View Model receives.
 
 These rules are available within `timmcleod/laravel-instance-validator`: `instance_of`, `collection_of`, and `paginator_of`.
 
