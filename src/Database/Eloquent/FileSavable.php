@@ -4,6 +4,8 @@ namespace TimMcLeod\LaravelCoreLib\Database\Eloquent;
 
 use Crypt;
 use Exception;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Storage;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -124,7 +126,7 @@ trait FileSavable
      */
     public function getStoragePath($includeFilename = false)
     {
-        $classDir = snake_case(array_last(explode('\\', get_class($this))));
+        $classDir = Str::snake(Arr::last(explode('\\', get_class($this))));
         $year = $this->created_at->format('Y');
         $month = $this->created_at->format('m');
 
