@@ -4,6 +4,7 @@ namespace TimMcLeod\LaravelCoreLib\Providers;
 
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 use TimMcLeod\LaravelCoreLib\Calendar\VCalendar;
 
 class LaravelCoreLibServiceProvider extends ServiceProvider
@@ -19,7 +20,7 @@ class LaravelCoreLibServiceProvider extends ServiceProvider
         // Ex: Response::ics($calendar)
         $factory->macro('ics', function (VCalendar $calendar) use ($factory)
         {
-            $filename = str_slug($calendar->vEvents()->first()) . '.ics';
+            $filename = Str::slug($calendar->vEvents()->first()) . '.ics';
             $headers = [
                 'Content-type'        => 'text/calendar; charset=utf-8',
                 'Content-Disposition' => "attachment; filename=$filename"

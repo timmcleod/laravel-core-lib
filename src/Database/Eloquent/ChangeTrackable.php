@@ -2,6 +2,9 @@
 
 namespace TimMcLeod\LaravelCoreLib\Database\Eloquent;
 
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+
 /**
  * The purpose of this trait is to allow us to keep track of changes
  * that are made to attribute values within our eloquent models,
@@ -73,12 +76,12 @@ trait ChangeTrackable
      */
     protected function trackChange($key, $old, $new)
     {
-        $hasAttribute = array_has($this->trackedChanges, "$key.old");
+        $hasAttribute = Arr::has($this->trackedChanges, "$key.old");
 
         // Only set old attribute if it doesn't already exist.
-        if (!$hasAttribute) array_set($this->trackedChanges, "$key.old", $old);
+        if (!$hasAttribute) Arr::set($this->trackedChanges, "$key.old", $old);
 
-        array_set($this->trackedChanges, "$key.new", $new);
+        Arr::set($this->trackedChanges, "$key.new", $new);
 
         ksort($this->trackedChanges);
     }
@@ -133,7 +136,7 @@ trait ChangeTrackable
      */
     public function getTrackedChangesArrayFor($attributes = [])
     {
-        return empty($attributes) ? $this->trackedChanges : array_only($this->trackedChanges, $attributes);
+        return empty($attributes) ? $this->trackedChanges : Arr::only($this->trackedChanges, $attributes);
     }
 
     /**
@@ -157,7 +160,7 @@ trait ChangeTrackable
      */
     public function hasAnyTrackedChangesFor($attributes = [])
     {
-        return !empty(array_only($this->trackedChanges, $attributes));
+        return !empty(Arr::only($this->trackedChanges, $attributes));
     }
 
     /**
@@ -197,7 +200,7 @@ trait ChangeTrackable
     public function getTrackedChangesFor(
         $attributes = [], $format = '{attribute}: {old} > {new}', $delimiter = ' | ', $emptyOld = '', $emptyNew = ''
     ) {
-        $changes = empty($attributes) ? $this->trackedChanges : array_only($this->trackedChanges, $attributes);
+        $changes = empty($attributes) ? $this->trackedChanges : Arr::only($this->trackedChanges, $attributes);
 
         return $this->getChangesString($changes, $format, $delimiter, $emptyOld, $emptyNew);
     }
@@ -227,7 +230,7 @@ trait ChangeTrackable
             $new = ($value['new'] === '' || $value['new'] === null) ? $emptyNew : $value['new'];
 
             $str .= str_replace(['{attribute}', '{label}', '{old}', '{new}'],
-                [$key, title_case(str_replace('_', ' ', $key)), $old, $new], $format);
+                [$key, Str::title(str_replace('_', ' ', $key)), $old, $new], $format);
 
             if ($i < $count) $str .= $delimiter;
         }
