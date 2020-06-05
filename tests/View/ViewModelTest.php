@@ -10,20 +10,6 @@ use TimMcLeod\LaravelCoreLib\View\BaseViewModel;
 
 class ViewModelTest extends TestCase
 {
-    public function setUp()
-    {
-        parent::setUp();
-
-        // set up
-    }
-
-    public function tearDown()
-    {
-        // tear down
-
-        parent::tearDown();
-    }
-
     public function testGetData()
     {
         $vm = new ViewModelStub([
@@ -43,7 +29,7 @@ class ViewModelTest extends TestCase
     {
         // Since the year is a string instead of an integer, an exception should be thrown.
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessageRegExp("/Invalid data: /");
+        $this->expectExceptionMessageMatches("/Invalid data: /");
 
         new ViewModelWithRulesStub([
             'year'     => 'Alternate 1985',
