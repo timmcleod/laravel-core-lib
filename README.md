@@ -1,4 +1,4 @@
-# LaravelCoreLib: A Library for Laravel 6.x
+# LaravelCoreLib: A Library for Laravel 7.x
 
 1) [Installation](#installation)
 1) [Change Trackable Models](#change-trackable-models)
@@ -8,7 +8,7 @@
 
 ## Installation
 
-This package requires PHP >= 7.2. Require this package with composer:
+This package requires PHP >= 7.3. Require this package with composer:
 
 ```
 composer require timmcleod/laravel-core-lib
